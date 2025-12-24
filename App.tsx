@@ -87,24 +87,7 @@ export default function App() {
   const [marketUnlocked, setMarketUnlocked] = useState(false);
   const [marketAccessCodeInput, setMarketAccessCodeInput] = useState("");
 
-  // Widget visibility state
-  const [showConvAI, setShowConvAI] = useState(false);
-  const [isAtBottom, setIsAtBottom] = useState(false);
 
-  // Handle delayed appearance
-  useEffect(() => {
-    let timeout: NodeJS.Timeout;
-
-    if (isAtBottom) {
-      timeout = setTimeout(() => {
-        setShowConvAI(true);
-      }, 10000); // 10 second delay
-    } else {
-      setShowConvAI(false);
-    }
-
-    return () => clearTimeout(timeout);
-  }, [isAtBottom]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -128,18 +111,7 @@ export default function App() {
     }
   }, []);
 
-  // Load ElevenLabs ConvAI Script
-  useEffect(() => {
-    const script = document.createElement('script');
-    script.src = "https://unpkg.com/@elevenlabs/convai-widget-embed@beta";
-    script.async = true;
-    script.type = "text/javascript";
-    document.body.appendChild(script);
 
-    return () => {
-      document.body.removeChild(script);
-    }
-  }, []);
 
   const handleAccessCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
@@ -165,17 +137,8 @@ export default function App() {
     }
   };
 
-  const handleScroll = (e: React.UIEvent<HTMLElement>) => {
-    const target = e.currentTarget;
-    const isBottomCheck = target.scrollHeight - target.scrollTop <= target.clientHeight + 100;
-    setIsAtBottom(isBottomCheck);
-  };
-
   return (
-    <main
-      onScroll={handleScroll}
-      className="bg-slate-950 text-slate-200 w-full h-screen overflow-y-scroll snap-y snap-mandatory scroll-smooth no-scrollbar"
-    >
+    <main className="bg-slate-950 text-slate-200 w-full h-screen overflow-y-scroll snap-y snap-mandatory scroll-smooth no-scrollbar">
 
       {/* SECTION 1: ENTRY STATE */}
       <SectionWrapper id="intro">
@@ -861,13 +824,7 @@ export default function App() {
           </motion.div>
         </div>
       </SectionWrapper>
-      {/* ElevenLabs ConvAI Widget - Only visible at bottom */}
-      <div
-        className={`fixed bottom-4 right-4 z-50 transition-opacity duration-500 ease-in-out ${showConvAI ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
-      >
-        {/* @ts-ignore */}
-        <elevenlabs-convai agent-id="agent_9901kd7v4vhtf45ayf56y1v8t21s"></elevenlabs-convai>
-      </div>
+
     </main>
   );
 }
