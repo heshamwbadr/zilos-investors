@@ -109,6 +109,19 @@ export default function App() {
     }
   }, []);
 
+  // Load ElevenLabs ConvAI Script
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = "https://unpkg.com/@elevenlabs/convai-widget-embed@beta";
+    script.async = true;
+    script.type = "text/javascript";
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    }
+  }, []);
+
   const handleAccessCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     setAccessCodeInput(val);
@@ -250,7 +263,7 @@ export default function App() {
           </motion.div>
         </div>
 
-        <div className="mt-12 text-center max-w-2xl">
+        <div className="mt-12 text-center max-w-2xl mx-auto">
           <p className="text-xl text-slate-300 text-center">
             Operators do not need more dashboards.<br />
             <strong className="text-white">They need clear answers.</strong>
@@ -820,6 +833,9 @@ export default function App() {
           </motion.div>
         </div>
       </SectionWrapper>
+      {/* ElevenLabs ConvAI Widget */}
+      {/* @ts-ignore */}
+      <elevenlabs-convai agent-id="agent_9901kd7v4vhtf45ayf56y1v8t21s"></elevenlabs-convai>
     </main>
   );
 }
