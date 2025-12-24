@@ -60,7 +60,7 @@ export const COMPARISON_TABLE: ComparisonRow[] = [
   },
   {
     feature: "Natural language queries",
-    essentials: "—",
+    essentials: "",
     growth: "Included",
     platinum: "Advanced"
   },
@@ -74,14 +74,19 @@ export const COMPARISON_TABLE: ComparisonRow[] = [
 
 export const ADD_ON_MODULES: AddOnModule[] = [
   {
-    name: "Multi-Location Performance Insights",
-    description: "Consolidated view for area managers to track region-wide KPIs.",
-    priceInfo: "from €49 / mo",
-  },
-  {
     name: "Voice Intelligence Agent",
     description: "Natural language query interface for on-the-go operations.",
     priceInfo: "from €49 / mo",
+  },
+  {
+    name: "Marketing Intelligence Module",
+    description: "Connect ads to revenue. Track real CAC and LTV per channel.",
+    priceInfo: "from €49 / mo",
+  },
+  {
+    name: "Competitor Intelligence Analysis",
+    description: "Real-time tracking of local competitor pricing and reviews.",
+    priceInfo: "from €39 / mo",
   },
   {
     name: "Scenario & Forecasting Layer",
