@@ -87,6 +87,9 @@ export default function App() {
   const [marketUnlocked, setMarketUnlocked] = useState(false);
   const [marketAccessCodeInput, setMarketAccessCodeInput] = useState("");
 
+  // Widget visibility state
+  const [showConvAI, setShowConvAI] = useState(false);
+
   useEffect(() => {
     const interval = setInterval(() => {
       setTickerOffset(prev => (prev + 1) % 100);
@@ -146,8 +149,17 @@ export default function App() {
     }
   };
 
+  const handleScroll = (e: React.UIEvent<HTMLElement>) => {
+    const target = e.currentTarget;
+    const isAtBottom = target.scrollHeight - target.scrollTop <= target.clientHeight + 100;
+    setShowConvAI(isAtBottom);
+  };
+
   return (
-    <main className="bg-slate-950 text-slate-200 w-full h-screen overflow-y-scroll snap-y snap-mandatory scroll-smooth no-scrollbar">
+    <main
+      onScroll={handleScroll}
+      className="bg-slate-950 text-slate-200 w-full h-screen overflow-y-scroll snap-y snap-mandatory scroll-smooth no-scrollbar"
+    >
 
       {/* SECTION 1: ENTRY STATE */}
       <SectionWrapper id="intro">
@@ -833,9 +845,13 @@ export default function App() {
           </motion.div>
         </div>
       </SectionWrapper>
-      {/* ElevenLabs ConvAI Widget */}
-      {/* @ts-ignore */}
-      <elevenlabs-convai agent-id="agent_9901kd7v4vhtf45ayf56y1v8t21s"></elevenlabs-convai>
+      {/* ElevenLabs ConvAI Widget - Only visible at bottom */}
+      <div
+        className={`fixed bottom-4 right-4 z-50 transition-opacity duration-500 ease-in-out ${showConvAI ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+      >
+        {/* @ts-ignore */}
+        <elevenlabs-convai agent-id="agent_9901kd7v4vhtf45ayf56y1v8t21s"></elevenlabs-convai>
+      </div>
     </main>
   );
 }
