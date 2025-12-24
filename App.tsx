@@ -89,6 +89,22 @@ export default function App() {
 
   // Widget visibility state
   const [showConvAI, setShowConvAI] = useState(false);
+  const [isAtBottom, setIsAtBottom] = useState(false);
+
+  // Handle delayed appearance
+  useEffect(() => {
+    let timeout: NodeJS.Timeout;
+
+    if (isAtBottom) {
+      timeout = setTimeout(() => {
+        setShowConvAI(true);
+      }, 10000); // 10 second delay
+    } else {
+      setShowConvAI(false);
+    }
+
+    return () => clearTimeout(timeout);
+  }, [isAtBottom]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -151,8 +167,8 @@ export default function App() {
 
   const handleScroll = (e: React.UIEvent<HTMLElement>) => {
     const target = e.currentTarget;
-    const isAtBottom = target.scrollHeight - target.scrollTop <= target.clientHeight + 100;
-    setShowConvAI(isAtBottom);
+    const isBottomCheck = target.scrollHeight - target.scrollTop <= target.clientHeight + 100;
+    setIsAtBottom(isBottomCheck);
   };
 
   return (
