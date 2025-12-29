@@ -10,6 +10,7 @@ import {
   ADD_ON_MODULES,
   ACCESS_CODE,
   COMPARISON_TABLE,
+  COMPETITIVE_TABLE,
   SECTION_IDS
 } from './constants';
 import {
@@ -87,6 +88,10 @@ export default function App() {
   const [marketUnlocked, setMarketUnlocked] = useState(false);
   const [marketAccessCodeInput, setMarketAccessCodeInput] = useState("");
 
+  // Unlock state for differentiation (wins)
+  const [winsUnlocked, setWinsUnlocked] = useState(false);
+  const [winsAccessCodeInput, setWinsAccessCodeInput] = useState("");
+
 
 
   useEffect(() => {
@@ -99,15 +104,13 @@ export default function App() {
   // Check for unlock state on mount (URL param or LocalStorage)
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const storedUnlock = localStorage.getItem('zilos_pricing_unlocked');
 
-    if (params.get('pricing') === 'detail' || storedUnlock === 'true') {
+    if (params.get('pricing') === 'detail') {
       setPricingUnlocked(true);
     }
 
-    const storedMarketUnlock = localStorage.getItem('zilos_market_unlocked');
-    if (storedMarketUnlock === 'true') {
-      setMarketUnlocked(true);
+    if (params.get('wins') === 'detail') {
+      setWinsUnlocked(true);
     }
   }, []);
 
@@ -120,7 +123,6 @@ export default function App() {
     // Check code - case insensitive
     if (val.toLowerCase() === ACCESS_CODE.toLowerCase()) {
       setPricingUnlocked(true);
-      localStorage.setItem('zilos_pricing_unlocked', 'true');
       setAccessCodeInput(""); // Clear input on success
     }
   };
@@ -132,8 +134,18 @@ export default function App() {
     // Check code - case insensitive
     if (val.toLowerCase() === ACCESS_CODE.toLowerCase()) {
       setMarketUnlocked(true);
-      localStorage.setItem('zilos_market_unlocked', 'true');
       setMarketAccessCodeInput(""); // Clear input on success
+    }
+  };
+
+  const handleWinsAccessCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setWinsAccessCodeInput(val);
+
+    // Check code - case insensitive
+    if (val.toLowerCase() === ACCESS_CODE.toLowerCase()) {
+      setWinsUnlocked(true);
+      setWinsAccessCodeInput(""); // Clear input on success
     }
   };
 
@@ -417,37 +429,227 @@ export default function App() {
         </div>
       </SectionWrapper>
 
-      {/* SECTION 7: BUSINESS MODEL */}
+      {/* SECTION 7: DIFFERENTIATION (Wins) */}
+      <SectionWrapper id="wins">
+        <div className="w-full max-w-4xl mx-auto">
+          <div className="text-center mb-12">
+            <Badge>Differentiation</Badge>
+            <h2 className="text-3xl md:text-5xl font-semibold text-white mb-4">
+              Zilos does not run your restaurant.
+            </h2>
+            <p className="text-xl text-slate-400">
+              It makes you better at running it.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="bg-slate-900/30 p-8 rounded-xl border border-slate-800">
+              <h3 className="text-slate-500 font-mono text-sm mb-4">THEM</h3>
+              <ul className="space-y-4 text-slate-400">
+                <li className="flex items-center"><span className="w-2 h-2 bg-red-500 rounded-full mr-3"></span>POS Replacements</li>
+                <li className="flex items-center"><span className="w-2 h-2 bg-red-500 rounded-full mr-3"></span>Black-box automation</li>
+                <li className="flex items-center"><span className="w-2 h-2 bg-red-500 rounded-full mr-3"></span>Decides for you</li>
+                <li className="flex items-center"><span className="w-2 h-2 bg-red-500 rounded-full mr-3"></span>Requires total switch</li>
+              </ul>
+            </div>
+            <div className="bg-slate-900 p-8 rounded-xl border border-blue-900/30 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-20 h-20 bg-blue-500/10 blur-2xl"></div>
+              <h3 className="text-blue-400 font-mono text-sm mb-4">ZILOS</h3>
+              <ul className="space-y-4 text-white font-medium">
+                <li className="flex items-center"><CheckCircle2 size={16} className="text-blue-500 mr-3" />POS Agnostic</li>
+                <li className="flex items-center"><CheckCircle2 size={16} className="text-blue-500 mr-3" />Deterministic analytics</li>
+                <li className="flex items-center"><CheckCircle2 size={16} className="text-blue-500 mr-3" />Explains, doesn't decide</li>
+                <li className="flex items-center"><CheckCircle2 size={16} className="text-blue-500 mr-3" />Connects existing tools</li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Unlocked Differentiation Content */}
+          <AnimatePresence>
+            {winsUnlocked && (
+              <motion.div
+                initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                animate={{ opacity: 1, height: "auto", marginTop: 48, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }}
+                exit={{ opacity: 0, height: 0, marginTop: 0, transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] } }}
+                className="w-full max-w-4xl mx-auto"
+              >
+                <div className="bg-slate-900/90 border border-slate-800/50 rounded-xl p-8 backdrop-blur-sm relative overflow-hidden">
+                  <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent"></div>
+
+                  {/* Header */}
+                  <div className="text-center mb-10">
+                    <h3 className="text-2xl md:text-3xl font-semibold text-white mb-2">Where Zilos Wins</h3>
+                    <div className="text-slate-400 font-medium">
+                      <p>The market is crowded with tools.</p>
+                      <p>It is empty of clarity.</p>
+                    </div>
+                  </div>
+
+                  {/* Competitive Set Table */}
+                  <div className="mb-12 overflow-x-auto">
+                    <h4 className="text-sm font-semibold text-white mb-4">Competitive Set (Simplified)</h4>
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b border-slate-800">
+                          <th className="text-left py-3 text-slate-500 font-medium w-1/3"></th>
+                          <th className="text-center py-3 text-slate-400 font-medium">POS Platforms</th>
+                          <th className="text-center py-3 text-slate-400 font-medium">Point Solutions</th>
+                          <th className="text-center py-3 text-slate-400 font-medium">BI Tools</th>
+                          <th className="text-center py-3 text-slate-400 font-medium">AI Automation</th>
+                          <th className="text-center py-3 text-blue-400 font-semibold">Zilos</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-800/50">
+                        {COMPETITIVE_TABLE.map((row, i) => (
+                          <tr key={i} className="hover:bg-slate-800/20 transition-colors">
+                            <td className="py-3 text-slate-300 font-medium pr-4">{row.feature}</td>
+                            <td className="py-3 text-center text-slate-500">
+                              {row.pos === 'check' ? <CheckCircle2 size={16} className="mx-auto text-slate-500" /> : row.pos === 'half' ? <svg width="16" height="16" viewBox="0 0 16 16" className="mx-auto text-slate-500"><circle cx="8" cy="8" r="7" stroke="currentColor" strokeWidth="1.5" fill="none" /><path d="M8 15A7 7 0 0 1 8 1V15Z" fill="currentColor" /></svg> : <span className="block text-slate-600 font-mono">✕</span>}
+                            </td>
+                            <td className="py-3 text-center text-slate-500">
+                              {row.point === 'check' ? <CheckCircle2 size={16} className="mx-auto text-slate-500" /> : row.point === 'half' ? <svg width="16" height="16" viewBox="0 0 16 16" className="mx-auto text-slate-500"><circle cx="8" cy="8" r="7" stroke="currentColor" strokeWidth="1.5" fill="none" /><path d="M8 15A7 7 0 0 1 8 1V15Z" fill="currentColor" /></svg> : <span className="block text-slate-600 font-mono">✕</span>}
+                            </td>
+                            <td className="py-3 text-center text-slate-500">
+                              {row.bi === 'check' ? <CheckCircle2 size={16} className="mx-auto text-slate-500" /> : row.bi === 'half' ? <svg width="16" height="16" viewBox="0 0 16 16" className="mx-auto text-slate-500"><circle cx="8" cy="8" r="7" stroke="currentColor" strokeWidth="1.5" fill="none" /><path d="M8 15A7 7 0 0 1 8 1V15Z" fill="currentColor" /></svg> : <span className="block text-slate-600 font-mono">✕</span>}
+                            </td>
+                            <td className="py-3 text-center text-slate-500">
+                              {row.ai === 'check' ? <CheckCircle2 size={16} className="mx-auto text-slate-500" /> : row.ai === 'half' ? <svg width="16" height="16" viewBox="0 0 16 16" className="mx-auto text-slate-500"><circle cx="8" cy="8" r="7" stroke="currentColor" strokeWidth="1.5" fill="none" /><path d="M8 15A7 7 0 0 1 8 1V15Z" fill="currentColor" /></svg> : <span className="block text-slate-600 font-mono">✕</span>}
+                            </td>
+                            <td className="py-3 text-center">
+                              {row.zilos === 'check' && <CheckCircle2 size={18} className="mx-auto text-blue-500" />}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                    <div className="mt-4 flex items-center gap-2 text-xs text-slate-500">
+                      <svg width="12" height="12" viewBox="0 0 16 16" className="text-slate-500"><circle cx="8" cy="8" r="7" stroke="currentColor" strokeWidth="1.5" fill="none" /><path d="M8 15A7 7 0 0 1 8 1V15Z" fill="currentColor" /></svg>
+                      <span>= possible with heavy configuration or services</span>
+                    </div>
+                  </div>
+
+                  {/* Key Insight Callout */}
+                  <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-6 text-center mb-10 relative">
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-slate-900 px-3 py-0.5 text-xs font-semibold text-blue-400 uppercase tracking-wider border border-blue-900/50 rounded-full">Key Insight</div>
+                    <p className="text-xl text-white font-medium">
+                      Zilos does not replace tools.<br />
+                      <span className="text-blue-200">It connects them into one operational intelligence layer.</span>
+                    </p>
+                  </div>
+
+                  {/* Why This Matters */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center mb-10 border-t border-slate-800 pt-10">
+                    <div>
+                      <h4 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">The Status Quo</h4>
+                      <ul className="space-y-3">
+                        <li className="flex items-start text-slate-400">
+                          <span className="text-slate-600 mr-2">•</span>
+                          <span>POS platforms show <span className="text-white">transactions</span></span>
+                        </li>
+                        <li className="flex items-start text-slate-400">
+                          <span className="text-slate-600 mr-2">•</span>
+                          <span>BI tools show <span className="text-white">metrics</span></span>
+                        </li>
+                        <li className="flex items-start text-slate-400">
+                          <span className="text-slate-600 mr-2">•</span>
+                          <span>AI tools make <span className="text-white">opaque suggestions</span></span>
+                        </li>
+                      </ul>
+                    </div>
+                    <div className="border-l border-slate-800 pl-8 hidden md:block">
+                      <h4 className="text-sm font-semibold text-blue-400 uppercase tracking-wider mb-4">Why This Matters</h4>
+                      <p className="text-lg text-white font-medium leading-relaxed">
+                        Zilos explains <span className="text-blue-400">performance</span> and prioritises <span className="text-blue-400">attention</span>.
+                      </p>
+                    </div>
+                    {/* Mobile version of the right col */}
+                    <div className="md:hidden">
+                      <h4 className="text-sm font-semibold text-blue-400 uppercase tracking-wider mb-4">Why This Matters</h4>
+                      <p className="text-lg text-white font-medium leading-relaxed">
+                        Zilos explains <span className="text-blue-400">performance</span> and prioritises <span className="text-blue-400">attention</span>.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Bottom Line Footer */}
+                  <div className="text-center pt-8 border-t border-slate-800">
+                    <p className="text-slate-400 text-lg mb-1">Others show data.</p>
+                    <p className="text-2xl md:text-3xl font-bold text-white">Zilos explains what to do next.</p>
+                  </div>
+
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Discreet Input Field for Wins Section */}
+          <div className="mt-8 h-12 w-full flex items-center justify-center opacity-0 hover:opacity-100 focus-within:opacity-100 transition-opacity duration-300 cursor-text group">
+            {!winsUnlocked && (
+              <input
+                type="text"
+                placeholder="Enter access code"
+                value={winsAccessCodeInput}
+                onChange={handleWinsAccessCodeChange}
+                className="bg-transparent border-b border-transparent focus:border-slate-800 group-hover:border-slate-800 outline-none text-center text-xs text-slate-500 placeholder:text-slate-700 transition-all duration-300 w-40 pb-1"
+                autoComplete="off"
+                spellCheck="false"
+              />
+            )}
+          </div>
+        </div>
+      </SectionWrapper>
+
+      {/* SECTION 8: BUSINESS MODEL */}
       <SectionWrapper id="business-model" className={pricingUnlocked ? 'pb-32' : ''}>
         <Badge>Business Model</Badge>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full mt-8 items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full mt-8 items-stretch">
           {PRICING_TIERS.map((tier, idx) => (
             <div
               key={idx}
-              className={`p-8 rounded-xl border flex flex-col ${tier.highlight
+              className={`p-6 rounded-xl border flex flex-col ${tier.highlight
                 ? 'bg-slate-900 border-blue-500/50 shadow-2xl relative'
                 : 'bg-transparent border-slate-800'
                 }`}
             >
               {tier.highlight && (
                 <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-blue-600 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">
-                  Customer Choice
+                  Recommended
                 </div>
               )}
               <h3 className="text-slate-400 font-medium mb-2">{tier.name}</h3>
-              <div className="text-4xl font-bold text-white mb-6">{tier.price}<span className="text-base font-normal text-slate-500">{tier.price.includes('€') ? '/mo' : ''}</span></div>
-              <p className="text-slate-300 text-sm leading-relaxed mb-8 flex-grow">{tier.description}</p>
+
+              {/* Price Display */}
+              <div className="mb-4">
+                <div className="text-3xl font-bold text-white">
+                  {tier.price}
+                  <span className="text-base font-normal text-slate-500">{tier.price.includes('€') ? ' / mo' : ''}</span>
+                </div>
+                {tier.locations && (
+                  <p className="text-sm text-slate-400 mt-1">{tier.locations}</p>
+                )}
+                {tier.additionalPriceInfo && (
+                  <p className="text-sm text-blue-400 mt-1 font-medium">{tier.additionalPriceInfo}</p>
+                )}
+              </div>
+
+              <p className="text-slate-300 text-sm leading-relaxed mb-4 flex-grow">{tier.description}</p>
+
+              {tier.bestFor && (
+                <div className="mb-4 pt-4 border-t border-slate-800">
+                  <p className="text-xs text-slate-500 uppercase tracking-wider mb-1">Best for</p>
+                  <p className="text-xs text-slate-400">{tier.bestFor}</p>
+                </div>
+              )}
 
               {/* Platinum Expansion for Unlocked State */}
               <AnimatePresence>
                 {pricingUnlocked && tier.name === "Platinum" && (
                   <motion.div
                     initial={{ opacity: 0, height: 0, marginBottom: 0 }}
-                    animate={{ opacity: 1, height: "auto", marginBottom: 24, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } }}
+                    animate={{ opacity: 1, height: "auto", marginBottom: 16, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } }}
                     exit={{ opacity: 0, height: 0, marginBottom: 0, transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] } }}
                     className="overflow-hidden border-t border-slate-800 pt-4"
                   >
-                    <p className="text-xs text-slate-400 font-medium mb-2">Designed for multi-location operators</p>
                     <ul className="text-xs text-slate-500 space-y-1">
                       <li>• Custom integration support</li>
                       <li>• Dedicated account manager</li>
@@ -457,11 +659,18 @@ export default function App() {
                 )}
               </AnimatePresence>
 
-              <div className="w-full h-1 bg-slate-800 rounded overflow-hidden">
-                <div className={`h-full bg-slate-600 ${idx === 0 ? 'w-1/3' : idx === 1 ? 'w-2/3' : 'w-full'}`}></div>
+              <div className="w-full h-1 bg-slate-800 rounded overflow-hidden mt-auto">
+                <div className={`h-full bg-slate-600 ${idx === 0 ? 'w-1/4' : idx === 1 ? 'w-2/4' : idx === 2 ? 'w-3/4' : 'w-full'}`}></div>
               </div>
             </div>
           ))}
+        </div>
+
+        {/* Pricing Footnote */}
+        <div className="mt-8 text-center">
+          <p className="text-xs text-slate-500 italic max-w-xl mx-auto">
+            "We discount the first four locations to accelerate adoption, then price per location once operational complexity increases."
+          </p>
         </div>
 
         {/* Unlocked Detailed Comparison & Add-Ons */}
@@ -477,22 +686,24 @@ export default function App() {
 
                 {/* Comparison Table */}
                 <div className="overflow-x-auto mb-16">
-                  <table className="w-full text-left text-sm border-collapse min-w-[600px]">
+                  <table className="w-full text-left text-sm border-collapse min-w-[700px]">
                     <thead>
                       <tr className="border-b border-slate-700">
-                        <th className="py-6 px-6 font-medium text-slate-500 w-[20%]"></th>
-                        <th className="py-6 px-6 font-bold text-white w-[25%] text-lg">Essentials</th>
-                        <th className="py-6 px-6 font-bold text-blue-400 w-[25%] text-lg">Growth</th>
-                        <th className="py-6 px-6 font-bold text-white w-[30%] text-lg">Platinum Partnership</th>
+                        <th className="py-6 px-4 font-medium text-slate-500 w-[16%]"></th>
+                        <th className="py-6 px-4 font-bold text-white w-[18%] text-base">Starter</th>
+                        <th className="py-6 px-4 font-bold text-white w-[22%] text-base">Essentials</th>
+                        <th className="py-6 px-4 font-bold text-blue-400 w-[22%] text-base">Growth</th>
+                        <th className="py-6 px-4 font-bold text-white w-[22%] text-base">Platinum</th>
                       </tr>
                     </thead>
                     <tbody>
                       {COMPARISON_TABLE.map((row, idx) => (
                         <tr key={idx} className="border-b border-slate-800 last:border-0 hover:bg-slate-800/20 transition-colors group">
-                          <td className="py-5 px-6 font-medium text-slate-500 group-hover:text-slate-400 transition-colors">{row.feature}</td>
-                          <td className="py-5 px-6 text-slate-300 leading-relaxed">{row.essentials}</td>
-                          <td className="py-5 px-6 text-blue-100 font-medium leading-relaxed bg-blue-500/5 rounded-sm">{row.growth}</td>
-                          <td className="py-5 px-6 text-slate-300 leading-relaxed">{row.platinum}</td>
+                          <td className="py-4 px-4 font-medium text-slate-500 group-hover:text-slate-400 transition-colors text-xs">{row.feature}</td>
+                          <td className="py-4 px-4 text-slate-300 leading-relaxed text-xs">{row.starter}</td>
+                          <td className="py-4 px-4 text-slate-300 leading-relaxed text-xs">{row.essentials}</td>
+                          <td className="py-4 px-4 text-blue-100 font-medium leading-relaxed bg-blue-500/5 rounded-sm text-xs">{row.growth}</td>
+                          <td className="py-4 px-4 text-slate-300 leading-relaxed text-xs">{row.platinum}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -567,30 +778,39 @@ export default function App() {
         </div>
       </SectionWrapper>
 
-      {/* SECTION 8: MARKET FOCUS */}
+      {/* SECTION 9: MARKET FOCUS */}
       <SectionWrapper id="market">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center w-full">
           <div>
             <Badge>Market Focus</Badge>
             <h2 className="text-3xl md:text-5xl font-semibold text-white mb-6">
-              Initial Wedge: Spain
+              Spain is a high-signal beachhead market
             </h2>
-            <div className="flex items-baseline space-x-2 mb-8">
-              <span className="text-6xl font-bold text-white">280k+</span>
-              <span className="text-slate-400">restaurants</span>
+            <div className="space-y-6 mb-8">
+              <ul className="space-y-4">
+                <li className="flex items-start">
+                  <div className="bg-slate-800 p-1 rounded mr-3 mt-1">
+                    <TrendingUp size={16} className="text-emerald-400" />
+                  </div>
+                  <span className="text-xl text-white font-medium">€41B foodservice market</span>
+                </li>
+                <li className="flex items-start">
+                  <div className="bg-slate-800 p-1 rounded mr-3 mt-1">
+                    <Layers size={16} className="text-blue-400" />
+                  </div>
+                  <span className="text-lg text-slate-300">High fragmentation + rising chain adoption</span>
+                </li>
+                <li className="flex items-start">
+                  <div className="bg-slate-800 p-1 rounded mr-3 mt-1">
+                    <ShieldCheck size={16} className="text-slate-400" />
+                  </div>
+                  <span className="text-lg text-slate-300">Mandatory e-invoicing by 2026 creates urgency</span>
+                </li>
+              </ul>
             </div>
-            <div className="space-y-6">
-              <div className="border-l-2 border-slate-700 pl-4">
-                <h4 className="text-white font-medium mb-1">Target Profile</h4>
-                <p className="text-slate-400 text-sm">Multi-location operators (3–20 sites). Owner-led. High pain.</p>
-              </div>
-              <div className="border-l-2 border-slate-700 pl-4">
-                <h4 className="text-white font-medium mb-1">Dynamics</h4>
-                <p className="text-slate-400 text-sm">Fast adoption. Strong retention. Referrals drive growth.</p>
-              </div>
-            </div>
-            <p className="mt-8 text-slate-500 font-medium">
-              High POS penetration and fragmented mid-market chains.
+
+            <p className="mt-8 text-slate-400 text-lg border-l-2 border-blue-500 pl-4 py-2 bg-blue-900/10 rounded-r-lg">
+              Spain concentrates the exact operational pain Zilos is built for.
             </p>
           </div>
           <div className="h-full min-h-[300px] bg-slate-900 rounded-2xl border border-slate-800 p-8 flex flex-col justify-center items-center relative overflow-hidden">
@@ -626,111 +846,171 @@ export default function App() {
                   <p className="text-slate-400 font-medium">Focused market. Disciplined growth. Credible outcomes.</p>
                 </div>
 
-                {/* ARR Callout */}
-                <div className="mb-16 p-8 bg-gradient-to-r from-blue-900/20 to-emerald-900/20 border border-slate-800 rounded-lg text-center">
-                  <p className="text-slate-300 mb-4">In Spain alone, with a focused multi-location operator wedge, Zilos reaches between:</p>
-                  <p className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400">
-                    €360k <span className="text-slate-600 text-2xl px-2">and</span> €1.7M
+                {/* Total Market Context */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 text-center">
+                  <div className="p-6 bg-slate-950/50 rounded-lg border border-slate-800">
+                    <p className="text-slate-500 text-xs uppercase tracking-wider mb-2">TAM</p>
+                    <p className="text-2xl font-bold text-white mb-1">~108,000</p>
+                    <p className="text-slate-400 text-sm">restaurants in Spain</p>
+                  </div>
+                  <div className="p-6 bg-slate-950/50 rounded-lg border border-slate-800">
+                    <p className="text-slate-500 text-xs uppercase tracking-wider mb-2">SAM</p>
+                    <p className="text-2xl font-bold text-white mb-1">~5,400</p>
+                    <p className="text-slate-400 text-sm">multi-location operators <br />(3+ sites)</p>
+                  </div>
+                  <div className="p-6 bg-slate-950/50 rounded-lg border border-blue-500/30 ring-1 ring-blue-500/20">
+                    <p className="text-blue-400 text-xs uppercase tracking-wider mb-2">SOM (3-Year Target)</p>
+                    <p className="text-2xl font-bold text-white mb-1">~330</p>
+                    <p className="text-slate-400 text-sm">operators <br />(~6% TAM | ~25% SAM)</p>
+                  </div>
+                </div>
+
+                <div className="text-center mb-16">
+                  <p className="inline-block px-4 py-1 rounded-full bg-slate-800 text-slate-300 text-sm font-medium border border-slate-700">
+                    This is a precision wedge, not a land-grab strategy.
                   </p>
-                  <p className="text-slate-500 mt-2 font-mono uppercase tracking-widest text-sm">in ARR within three years</p>
+                </div>
+
+                {/* ARR Trajectory */}
+                <div className="mb-16 p-8 bg-gradient-to-r from-blue-900/10 to-emerald-900/10 border border-slate-800 rounded-xl relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 blur-3xl rounded-full"></div>
+                  <h4 className="text-white font-medium mb-8 text-center relative z-10">Spain ARR Trajectory (3-Year View)</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
+                    <div className="text-center">
+                      <p className="text-slate-500 text-sm mb-2">Year 1</p>
+                      <p className="text-3xl font-bold text-slate-200">~€0.5M <span className="text-base font-normal text-slate-500">ARR</span></p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-slate-500 text-sm mb-2">Year 2</p>
+                      <p className="text-3xl font-bold text-slate-200">~€1.6M <span className="text-base font-normal text-slate-500">ARR</span></p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-slate-500 text-sm mb-2">Year 3</p>
+                      <p className="text-4xl font-bold text-emerald-400">~€3.0M <span className="text-base font-normal text-slate-500">ARR</span></p>
+                    </div>
+                  </div>
+                  <div className="mt-8 text-center">
+                    <p className="text-slate-500 text-sm italic">Built on disciplined customer acquisition and natural expansion, not aggressive assumptions.</p>
+                  </div>
                 </div>
 
                 {/* Growth Drivers Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
                   <div>
-                    <h4 className="text-emerald-400 font-mono text-sm uppercase tracking-wider mb-6 border-b border-emerald-900/30 pb-2">Driven By</h4>
-                    <ul className="space-y-4">
+                    <h4 className="text-emerald-400 font-mono text-sm uppercase tracking-wider mb-6 border-b border-emerald-900/30 pb-2">What Drives Growth</h4>
+                    <ul className="space-y-6">
                       <li className="flex items-start">
                         <CheckCircle2 size={18} className="text-emerald-500 mr-3 mt-1 flex-shrink-0" />
-                        <span className="text-slate-300">Steady customer acquisition among owner-led groups</span>
+                        <div>
+                          <span className="text-slate-200 font-medium block">Multi-location adoption</span>
+                          <span className="text-slate-500 text-sm">Value increases as operational complexity grows</span>
+                        </div>
                       </li>
                       <li className="flex items-start">
                         <CheckCircle2 size={18} className="text-emerald-500 mr-3 mt-1 flex-shrink-0" />
-                        <span className="text-slate-300">Natural expansion through additional locations</span>
+                        <div>
+                          <span className="text-slate-200 font-medium block">Channel partners</span>
+                          <span className="text-slate-500 text-sm">POS integrators and hospitality consultants as scalable distribution</span>
+                        </div>
                       </li>
                       <li className="flex items-start">
                         <CheckCircle2 size={18} className="text-emerald-500 mr-3 mt-1 flex-shrink-0" />
-                        <span className="text-slate-300">Tier progression as operational complexity increases</span>
+                        <div>
+                          <span className="text-slate-200 font-medium block">Expansion within customers</span>
+                          <span className="text-slate-500 text-sm">More locations, deeper intelligence, higher trust over time</span>
+                        </div>
                       </li>
                     </ul>
                   </div>
                   <div>
-                    <h4 className="text-red-400 font-mono text-sm uppercase tracking-wider mb-6 border-b border-red-900/30 pb-2">Not Driven By</h4>
-                    <ul className="space-y-4">
+                    <h4 className="text-red-400 font-mono text-sm uppercase tracking-wider mb-6 border-b border-red-900/30 pb-2">What Does Not Drive Growth</h4>
+                    <ul className="space-y-6">
                       <li className="flex items-start">
                         <span className="text-red-500 mr-3 mt-1 text-lg leading-none">×</span>
-                        <span className="text-slate-400">Automation hype</span>
+                        <div>
+                          <span className="text-slate-200 font-medium block">Price hikes</span>
+                          <span className="text-slate-500 text-sm">Growth comes from usage and value, not repricing</span>
+                        </div>
                       </li>
                       <li className="flex items-start">
                         <span className="text-red-500 mr-3 mt-1 text-lg leading-none">×</span>
-                        <span className="text-slate-400">Black-box AI promises</span>
+                        <div>
+                          <span className="text-slate-200 font-medium block">Automation hype</span>
+                          <span className="text-slate-500 text-sm">Deterministic intelligence, not black-box promises</span>
+                        </div>
                       </li>
                       <li className="flex items-start">
                         <span className="text-red-500 mr-3 mt-1 text-lg leading-none">×</span>
-                        <span className="text-slate-400">Aggressive pricing assumptions</span>
+                        <div>
+                          <span className="text-slate-200 font-medium block">Enterprise dependency in Year 1</span>
+                          <span className="text-slate-500 text-sm">Early growth driven by owner-led and mid-market operators</span>
+                        </div>
                       </li>
                     </ul>
                   </div>
                 </div>
 
-                {/* Supporting Metrics Table */}
-                <div className="mb-12">
-                  <h4 className="text-white font-medium mb-6">Supporting Metrics <span className="text-slate-500 font-normal">(Year 3 Snapshot)</span></h4>
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left text-sm border-collapse min-w-[500px]">
-                      <thead>
-                        <tr className="border-b border-slate-700">
-                          <th className="py-4 px-4 font-semibold text-white w-1/4">Scenario</th>
-                          <th className="py-4 px-4 font-semibold text-white w-1/4">Active Customers</th>
-                          <th className="py-4 px-4 font-semibold text-white w-1/4">Avg ARR per Customer</th>
-                          <th className="py-4 px-4 font-semibold text-white w-1/4">Locations Managed</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr className="border-b border-slate-800/50 hover:bg-slate-800/20 transition-colors">
-                          <td className="py-4 px-4 font-medium text-slate-400">Conservative</td>
-                          <td className="py-4 px-4 text-slate-300">~120</td>
-                          <td className="py-4 px-4 text-slate-300">~€3,000</td>
-                          <td className="py-4 px-4 text-slate-300">~540</td>
-                        </tr>
-                        <tr className="border-b border-slate-800/50 hover:bg-slate-800/20 transition-colors">
-                          <td className="py-4 px-4 font-medium text-slate-400">Base</td>
-                          <td className="py-4 px-4 text-slate-300">~250</td>
-                          <td className="py-4 px-4 text-slate-300">~€3,500</td>
-                          <td className="py-4 px-4 text-slate-300">~1,125</td>
-                        </tr>
-                        <tr className="hover:bg-slate-800/20 transition-colors">
-                          <td className="py-4 px-4 font-medium text-slate-400">Growth</td>
-                          <td className="py-4 px-4 text-slate-300">~450</td>
-                          <td className="py-4 px-4 text-slate-300">~€3,800</td>
-                          <td className="py-4 px-4 text-slate-300">~2,025</td>
-                        </tr>
-                      </tbody>
-                    </table>
+                {/* ARPA Metrics */}
+                <div className="mb-16 pt-8 border-t border-slate-800">
+                  <h4 className="text-white font-medium mb-8 text-center">Unit Economics</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                    <div className="p-6 bg-slate-950/50 rounded-lg border border-slate-800">
+                      <p className="text-slate-500 text-xs uppercase tracking-wider mb-2">Essentials ARPA</p>
+                      <p className="text-2xl font-bold text-white mb-1">~€3.2K</p>
+                      <p className="text-slate-400 text-sm">per customer / year</p>
+                    </div>
+                    <div className="p-6 bg-slate-950/50 rounded-lg border border-blue-500/30 ring-1 ring-blue-500/20">
+                      <p className="text-blue-400 text-xs uppercase tracking-wider mb-2">Growth ARPA (avg 8 locations)</p>
+                      <p className="text-2xl font-bold text-white mb-1">~€12.3K</p>
+                      <p className="text-slate-400 text-sm">per customer / year</p>
+                    </div>
+                    <div className="p-6 bg-slate-950/50 rounded-lg border border-emerald-500/30 ring-1 ring-emerald-500/20">
+                      <p className="text-emerald-400 text-xs uppercase tracking-wider mb-2">Blended ARPA</p>
+                      <p className="text-2xl font-bold text-white mb-1">~€6.4K</p>
+                      <p className="text-slate-400 text-sm">65% Essentials / 35% Growth</p>
+                    </div>
                   </div>
+                  <p className="text-center text-slate-500 text-xs mt-4 italic">ARPA growth is expansion-driven, not price-hike driven.</p>
                 </div>
 
-                {/* Expansion Logic */}
-                <div className="bg-slate-950/50 rounded-lg p-6 border border-slate-800">
-                  <h4 className="text-white font-medium mb-4">Expansion Logic</h4>
-                  <ul className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
-                    <li className="text-slate-400">
-                      <strong className="text-slate-300 block mb-1">Core Reliability</strong>
-                      Platform delivers daily visibility from day one.
-                    </li>
-                    <li className="text-slate-400">
-                      <strong className="text-slate-300 block mb-1">Layered Intelligence</strong>
-                      Add-ons layer deeper intelligence over time.
-                    </li>
-                    <li className="text-slate-400">
-                      <strong className="text-slate-300 block mb-1">Trust-Based Scale</strong>
-                      Revenue scales as trust and usage increase, not forced upsell.
-                    </li>
-                  </ul>
+                {/* Market Segmentation to Tier Alignment */}
+                <div className="mb-16 pt-8 border-t border-slate-800">
+                  <h4 className="text-white font-medium mb-8 text-center">Market Segmentation → Tier Alignment</h4>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="p-4 bg-slate-950/50 rounded-lg border border-slate-800 text-center">
+                      <p className="text-slate-500 text-xs uppercase tracking-wider mb-2">1 location</p>
+                      <p className="text-lg font-bold text-white">Starter</p>
+                      <p className="text-slate-400 text-xs mt-1">€89/mo</p>
+                    </div>
+                    <div className="p-4 bg-slate-950/50 rounded-lg border border-slate-800 text-center">
+                      <p className="text-slate-500 text-xs uppercase tracking-wider mb-2">2–4 locations</p>
+                      <p className="text-lg font-bold text-white">Essentials</p>
+                      <p className="text-slate-400 text-xs mt-1">€267/mo</p>
+                    </div>
+                    <div className="p-4 bg-slate-950/50 rounded-lg border border-blue-500/30 ring-1 ring-blue-500/20 text-center">
+                      <p className="text-blue-400 text-xs uppercase tracking-wider mb-2">5+ locations</p>
+                      <p className="text-lg font-bold text-white">Growth</p>
+                      <p className="text-slate-400 text-xs mt-1">€267 + €189/loc</p>
+                    </div>
+                    <div className="p-4 bg-slate-950/50 rounded-lg border border-slate-800 text-center">
+                      <p className="text-slate-500 text-xs uppercase tracking-wider mb-2">Large groups</p>
+                      <p className="text-lg font-bold text-white">Platinum</p>
+                      <p className="text-slate-400 text-xs mt-1">Partnership</p>
+                    </div>
+                  </div>
+                  <p className="text-center text-slate-500 text-xs mt-4 italic">Multi-location operators are the core monetisation engine.</p>
                 </div>
 
-                <div className="mt-8 text-center">
-                  <p className="text-emerald-400 font-medium">Outcome: A scalable, capital-efficient growth path built on real operator value.</p>
+                {/* Tier Progression */}
+                <div className="mb-16 p-6 bg-blue-900/10 border border-blue-500/20 rounded-lg text-center">
+                  <p className="text-blue-200 text-sm font-medium mb-2">Land-and-Expand Logic</p>
+                  <p className="text-slate-400 text-sm">"We discount the first four locations to accelerate adoption, then price per location once operational complexity increases."</p>
+                </div>
+
+                {/* Investor Takeaway */}
+                <div className="pt-8 border-t border-slate-800 text-center">
+                  <p className="text-xl text-white font-medium mb-2">Spain alone supports a path to €3M ARR with &lt;6% market penetration.</p>
+                  <p className="text-slate-400">This is a foundation for European scale, not a ceiling.</p>
                 </div>
 
               </div>
@@ -754,40 +1034,44 @@ export default function App() {
         </div>
       </SectionWrapper>
 
-      {/* SECTION 9: WHY ZILOS WINS */}
-      <SectionWrapper id="wins">
+      {/* SECTION 11: WHY IT SCALES */}
+      <SectionWrapper id="scales">
         <div className="w-full max-w-4xl mx-auto">
           <div className="text-center mb-12">
-            <Badge>Differentiation</Badge>
-            <h2 className="text-3xl md:text-5xl font-semibold text-white mb-4">
-              Zilos does not run your restaurant.
+            <Badge>Why It Scales</Badge>
+            <h2 className="text-3xl md:text-5xl font-semibold text-white mb-6">
+              Growth by Design, Not Force.
             </h2>
-            <p className="text-xl text-slate-400">
-              It makes you better at running it.
+            <p className="text-slate-400 text-lg mb-8">
+              Revenue scales as trust increases.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-slate-900/30 p-8 rounded-xl border border-slate-800">
-              <h3 className="text-slate-500 font-mono text-sm mb-4">THEM</h3>
-              <ul className="space-y-4 text-slate-400">
-                <li className="flex items-center"><span className="w-2 h-2 bg-red-500 rounded-full mr-3"></span>POS Replacements</li>
-                <li className="flex items-center"><span className="w-2 h-2 bg-red-500 rounded-full mr-3"></span>Black-box automation</li>
-                <li className="flex items-center"><span className="w-2 h-2 bg-red-500 rounded-full mr-3"></span>Decides for you</li>
-                <li className="flex items-center"><span className="w-2 h-2 bg-red-500 rounded-full mr-3"></span>Requires total switch</li>
-              </ul>
-            </div>
-            <div className="bg-slate-900 p-8 rounded-xl border border-blue-900/30 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-20 h-20 bg-blue-500/10 blur-2xl"></div>
-              <h3 className="text-blue-400 font-mono text-sm mb-4">ZILOS</h3>
-              <ul className="space-y-4 text-white font-medium">
-                <li className="flex items-center"><CheckCircle2 size={16} className="text-blue-500 mr-3" />POS Agnostic</li>
-                <li className="flex items-center"><CheckCircle2 size={16} className="text-blue-500 mr-3" />Deterministic analytics</li>
-                <li className="flex items-center"><CheckCircle2 size={16} className="text-blue-500 mr-3" />Explains, doesn't decide</li>
-                <li className="flex items-center"><CheckCircle2 size={16} className="text-blue-500 mr-3" />Connects existing tools</li>
-              </ul>
-            </div>
+          <div className="bg-slate-900/50 rounded-lg p-8 border border-slate-800">
+            <ul className="grid grid-cols-1 md:grid-cols-3 gap-8 text-base">
+              <li className="text-slate-400">
+                <strong className="text-slate-300 block mb-2 text-lg">Core Reliability</strong>
+                Platform delivers daily visibility from day one. High retention foundation.
+              </li>
+              <li className="text-slate-400">
+                <strong className="text-slate-300 block mb-2 text-lg">Layered Intelligence</strong>
+                Add-ons layer deeper intelligence over time as operators mature.
+              </li>
+              <li className="text-slate-400">
+                <strong className="text-slate-300 block mb-2 text-lg">Trust-Based Scale</strong>
+                Expansion comes from pull, not push. Multi-location operators standardize naturally.
+              </li>
+            </ul>
           </div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className="text-slate-600 text-sm font-mono text-center mt-24"
+          >
+            ZILOS &copy; {new Date().getFullYear()}
+          </motion.div>
         </div>
       </SectionWrapper>
 
@@ -813,15 +1097,6 @@ export default function App() {
           <div className="mb-12">
             <ZeroSilosAnimation />
           </div>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            className="text-slate-600 text-sm font-mono"
-          >
-            ZILOS &copy; {new Date().getFullYear()}
-          </motion.div>
         </div>
       </SectionWrapper>
 

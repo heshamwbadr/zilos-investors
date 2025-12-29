@@ -1,4 +1,4 @@
-import { AskZilosExample, PricingTier, SectionId, AddOnModule, ComparisonRow } from './types';
+import { AskZilosExample, PricingTier, SectionId, AddOnModule, ComparisonRow, CompetitiveRow } from './types';
 
 export const SECTION_IDS: SectionId[] = [
   SectionId.Intro,
@@ -7,68 +7,80 @@ export const SECTION_IDS: SectionId[] = [
   SectionId.Solution,
   SectionId.HowItWorks,
   SectionId.Features,
+  SectionId.Wins,
   SectionId.BusinessModel,
   SectionId.Market,
-  SectionId.Wins,
   SectionId.WhyNow,
+  SectionId.Scales,
 ];
 
-export const ACCESS_CODE = "zilos2025";
+export const ACCESS_CODE = "zilos.2025";
+
+export const COMPETITIVE_TABLE: CompetitiveRow[] = [
+  { feature: "POS agnostic", pos: "x", point: "check", bi: "check", ai: "check", zilos: "check" },
+  { feature: "Cross-system intelligence", pos: "x", point: "x", bi: "half", ai: "half", zilos: "check" },
+  { feature: "Explains \"why\"", pos: "x", point: "x", bi: "x", ai: "x", zilos: "check" }, // AI col actually says "Opaque" in image, but using X/Half system mostly, mapping Opaque -> x for simplicity or custom handling? Plan said enum but string works. Wait, image has "Opaque" text. I should probably use string to allow text overrides if needed, OR stick to strict enum. The plan example used 'check'. "Opaque" is effectively a fail/warning. 'x' is safest for "doesn't do it well".
+  { feature: "Deterministic financials", pos: "check", point: "check", bi: "half", ai: "x", zilos: "check" },
+  { feature: "Operator-first", pos: "half", point: "half", bi: "x", ai: "x", zilos: "check" },
+  { feature: "Scales across locations", pos: "x", point: "x", bi: "half", ai: "x", zilos: "check" }
+];
 
 export const COMPARISON_TABLE: ComparisonRow[] = [
   {
     feature: "Best suited for",
-    essentials: "Owner-operators getting daily control",
-    growth: "Operators managing multiple locations",
-    platinum: "Multi-location groups seeking continuous optimisation"
+    starter: "Single-location owner-operators",
+    essentials: "Small multi-location operators (2–4 sites)",
+    growth: "Operators managing 5+ locations",
+    platinum: "Large multi-location groups"
   },
   {
     feature: "Monthly price",
-    essentials: "€89 / month",
-    growth: "€189 / month",
+    starter: "€89 / month",
+    essentials: "€267 / month (up to 4 locations)",
+    growth: "€267 + €189 per additional location",
     platinum: "Partnership"
   },
   {
+    feature: "Locations included",
+    starter: "1",
+    essentials: "Up to 4",
+    growth: "First 4 included, then per-location",
+    platinum: "Unlimited"
+  },
+  {
     feature: "Intelligence cadence",
-    essentials: "Daily performance summary",
-    growth: "In-day priorities and explanations",
+    starter: "Daily performance summary",
+    essentials: "Daily cross-location comparison",
+    growth: "Real-time prioritisation",
     platinum: "Continuous optimisation loop"
   },
   {
     feature: "Decision depth",
-    essentials: "What happened yesterday",
-    growth: "What is happening today and why",
-    platinum: "What to adjust next and where"
-  },
-  {
-    feature: "Attention management",
-    essentials: "End-of-day clarity",
-    growth: "Real-time prioritisation",
-    platinum: "Executive-level focus"
-  },
-  {
-    feature: "Operational coverage",
-    essentials: "Core visibility across operations",
-    growth: "Actionable intelligence across teams",
-    platinum: "Optimised at scale across locations"
+    starter: "What happened yesterday",
+    essentials: "What's happening across locations",
+    growth: "What to fix next, where, and why",
+    platinum: "Strategic optimisation guidance"
   },
   {
     feature: "AI interpretation",
-    essentials: "Daily AI explanation",
-    growth: "Ongoing AI explanations",
+    starter: "Daily AI explanation",
+    essentials: "Cross-location AI insights",
+    growth: "Real-time AI prioritisation",
     platinum: "Always-on interpretation with context"
   },
   {
     feature: "Natural language queries",
-    essentials: "",
-    growth: "Included",
-    platinum: "Advanced"
+    starter: "",
+    essentials: "Basic",
+    growth: "Advanced",
+    platinum: "Full access"
   },
   {
-    feature: "Partnership level",
-    essentials: "Standard support",
-    growth: "Priority support",
-    platinum: "Dedicated optimisation partnership"
+    feature: "Support level",
+    starter: "Standard support",
+    essentials: "Priority support",
+    growth: "Dedicated success manager",
+    platinum: "Strategic partnership"
   }
 ];
 
@@ -115,20 +127,33 @@ export const ASK_ZILOS_EXAMPLES: AskZilosExample[] = [
 
 export const PRICING_TIERS: PricingTier[] = [
   {
-    name: "Essentials",
+    name: "Starter",
     price: "€89",
-    description: "Know how you performed yesterday.",
+    locations: "1 location",
+    description: "Know how you performed yesterday. Daily clarity with zero setup friction.",
+    bestFor: "Single-location owner-operators",
+  },
+  {
+    name: "Essentials",
+    price: "€267",
+    locations: "Up to 4 locations included",
+    description: "Know what's happening across locations and why. Unified daily performance, side-by-side comparison, AI explanations.",
+    bestFor: "Small multi-location operators (2–4 sites). Land-and-expand entry tier.",
   },
   {
     name: "Growth",
-    price: "€189",
-    description: "Know what's happening today and why.",
+    price: "€267",
+    locations: "Includes first 4 locations",
+    additionalPriceInfo: "+ €189 per additional location (5+)",
+    description: "Real-time prioritisation and cross-location intelligence. Understand what to fix next, where, and why.",
+    bestFor: "Operators managing 5+ locations. Operational complexity stage.",
     highlight: true,
   },
   {
     name: "Platinum",
     price: "Partnership",
-    description: "Optimise multi-locations continuously without managing tools or systems.",
+    description: "Continuous optimisation across locations. Custom integrations, strategic reviews, dedicated support.",
+    bestFor: "Large multi-location groups. Strategic partners.",
   },
 ];
 

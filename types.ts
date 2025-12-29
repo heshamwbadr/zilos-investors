@@ -8,6 +8,9 @@ export interface PricingTier {
   price: string;
   description: string;
   highlight?: boolean;
+  locations?: string;
+  bestFor?: string;
+  additionalPriceInfo?: string;
 }
 
 export interface AskZilosExample {
@@ -24,9 +27,19 @@ export interface AddOnModule {
 
 export interface ComparisonRow {
   feature: string;
+  starter: string;
   essentials: string;
   growth: string;
   platinum: string;
+}
+
+export interface CompetitiveRow {
+  feature: string;
+  pos: 'check' | 'x' | 'half';
+  point: 'check' | 'x' | 'half';
+  bi: 'check' | 'x' | 'half';
+  ai: 'check' | 'x' | 'half';
+  zilos: 'check' | 'x' | 'half';
 }
 
 export enum SectionId {
@@ -40,4 +53,5 @@ export enum SectionId {
   Market = 'market',
   Wins = 'wins',
   WhyNow = 'why-now',
+  Scales = 'scales',
 }
